@@ -24,7 +24,7 @@ Toda a interatividade é feita com **JavaScript puro**, aplicando os conteúdos 
 
 1. Clone o repositório ou baixe os arquivos:
    ```bash
-   git clone https://github.com/matheusgiachetti/Tarefa-8.git
+   git clone https://github.com/matheusgiachetti/aula08-javascript-portal.git
    ```
 2. Abra a pasta do projeto.
 3. Dê dois cliques no arquivo `index.html` para abrir no navegador (não precisa de servidor).
@@ -34,7 +34,7 @@ Toda a interatividade é feita com **JavaScript puro**, aplicando os conteúdos 
 ## Estrutura de arquivos
 
 ```
-Tarefa-8/
+aula08-javascript-portal/
 ├── index.html   # estrutura da página (HTML semântico)
 ├── style.css    # estilos, Flexbox, modo escuro e responsividade
 ├── script.js    # todas as funcionalidades em JavaScript
@@ -214,6 +214,62 @@ mensagemAtual = (mensagemAtual + 1) % mensagens.length;
 mensagemBoasVindas.textContent = mensagens[mensagemAtual];
 ```
 
+### 12. Mural de avisos
+
+**O que faz:** os avisos novos aparecem com uma borda azul e um contador mostra quantos ainda não foram lidos. O botão "Marcar todos como lidos" tira o destaque de todos e zera o contador.
+
+**Conceitos de JS:** `querySelectorAll`, `length` (contagem inicial), `forEach`, `classList.remove` e `textContent`.
+
+```js
+document.querySelectorAll(".nao-lido").forEach(function (aviso) {
+    aviso.classList.remove("nao-lido");
+});
+contadorAvisos.textContent = 0;
+```
+
+### 13. Quadro de horários
+
+**O que faz:** os botões Segunda a Sexta destacam a coluna do dia na tabela, deixam o botão clicado selecionado e escrevem abaixo da tabela as aulas daquele dia (ex.: "Segunda-feira: Web Design e Algoritmos.").
+
+**Como funciona:** uma única função `destacarDia(dia, nomeDia, botao)` faz todo o trabalho. Os cinco botões são ligados a ela percorrendo um array de objetos com `forEach`, sem repetir código.
+
+**Conceitos de JS:** função com parâmetros, array de objetos, `forEach` com índice, template string no seletor (`.col-${dia}`), `classList.add/remove`, operador `+=` e ternário.
+
+```js
+document.querySelectorAll(`.col-${dia}`).forEach(function (celula) {
+    celula.classList.add("destaque");
+});
+horariosInfo.textContent = `${nomeDia}: ${aulas}.`;
+```
+
+### 14. Depoimentos
+
+**O que faz:** mostra um depoimento por vez. As setas avançam e voltam, e o texto do meio mostra a posição (ex.: "2 / 5"). Depois do último, a seta da direita volta ao primeiro; antes do primeiro, a da esquerda vai ao último.
+
+**Conceitos de JS:** variável `let` de posição, `if` para voltar ao início/fim, índice e `length` da lista de depoimentos, `classList` e template string.
+
+```js
+let proxima = posicaoDepoimento + 1;
+if (proxima >= depoimentos.length) {
+    proxima = 0;
+}
+mostrarDepoimento(proxima);
+```
+
+### 15. Perguntas frequentes (FAQ)
+
+**O que faz:** as respostas começam escondidas. Clicar em uma pergunta abre a resposta (o "+" gira e vira "×") e clicar de novo fecha.
+
+**Conceitos de JS:** `querySelectorAll`, `forEach` com índice e `classList.toggle`.
+
+```js
+perguntasFaq.forEach(function (pergunta, i) {
+    pergunta.addEventListener("click", function () {
+        itensFaq[i].classList.toggle("aberto");
+    });
+});
+```
+
 ## Conceitos da aula aplicados
 
 - **Variáveis:** `const` para valores fixos (elementos do DOM, arrays, o objeto `aluno`) e `let` para o que muda (índices, lista de tarefas, filtro atual, acumulador da média).
@@ -225,7 +281,7 @@ mensagemBoasVindas.textContent = mensagens[mensagemAtual];
 - **Condicionais:** `if/else`, `if / else if / else` e o operador ternário.
 - **Repetição:** laços `for` na tabuada, na média da turma e na validação do e-mail, com `break` e `continue`.
 - **Funções:** declaração com `function`, arrow function, parâmetros, `return` e funções como callback dos eventos.
-- **Arrays:** índice, `length`, `forEach` e `filter` (tarefas, notas e mensagens).
+- **Arrays:** índice, `length`, `forEach` e `filter` (tarefas, notas, mensagens, dias da semana e as listas do `querySelectorAll`).
 - **Objetos:** o objeto `aluno` com propriedades, métodos e `this`, e os objetos das tarefas e das notas.
 - **Caixas de diálogo:** `alert` (tarefa vazia), `prompt` e `confirm` (alterar nome).
 - **DOM:** `getElementById`, `querySelector`, `querySelectorAll`, `addEventListener`, `textContent`, `innerHTML`, `value`, `classList`, `createElement` e `appendChild`.
@@ -239,17 +295,26 @@ mensagemBoasVindas.textContent = mensagens[mensagemAtual];
 - Em telas de até **768px**: cabeçalho, avisos, formulários e rodapé ficam em coluna, a tabuada passa para uma coluna e os espaçamentos diminuem.
 - Em telas de até **400px**: o título do banner diminui mais e os dados do cartão ficam um embaixo do outro.
 
-## Melhorias
+## Melhorias e novos recursos
 
-Além dos exemplos da aula, o projeto recebeu estas melhorias:
+Além dos cinco exemplos da aula (funcionalidades 1 a 5), o projeto recebeu:
 
-- **Novas seções:** mural de avisos, notas da turma, cartão do aluno, quadro de horários, lista de tarefas, tabuada, depoimentos, perguntas frequentes e formulário de contato.
-- **Visual:** `hover` e `transition` em botões, cards, links e itens de lista; cartão do aluno em degradê; rodapé em três colunas.
+- **Dez novos recursos em JavaScript (6 a 15):** lista de tarefas, notas da turma, cartão do aluno, tabuada, formulário de contato, troca da mensagem de boas-vindas, mural de avisos, quadro de horários, depoimentos e perguntas frequentes.
+- **Novas seções no HTML:** cada recurso tem sua própria seção semântica, com links no menu e no rodapé.
+- **Visual:** `hover` e `transition` em botões, cards, links e itens de lista; cartão do aluno em degradê; tabela de horários com destaque de coluna; rodapé em três colunas.
 - **Modo escuro completo:** todas as seções novas usam as mesmas variáveis de cor, então também mudam de tema.
 - **Validações:** avisos para campos vazios, notas fora de 0 a 10, e-mail inválido e mensagem curta.
-- **Revisão do código:** todo o HTML, CSS e JS comentado em português; console limpo, sem erros, e todos os ids usados no JS conferidos no HTML.
+- **Código sem repetição:** funções reaproveitadas, como `destacarDia`, `mostrarTarefas`, `mostrarNotas` e `mostrarDepoimento`.
+- **Revisão do código:** todo o HTML, CSS e JS comentado em português; console sem erros e todos os ids e classes usados no JS conferidos no HTML.
 
-Próximas melhorias possíveis: dar ação aos botões dos depoimentos, às perguntas frequentes, aos filtros de dia do quadro de horários e ao mural de avisos (o HTML e o CSS já estão preparados).
+## Contagem de linhas
+
+| Arquivo    | Linhas |
+|------------|--------|
+| index.html | 558 |
+| style.css  | 1329 |
+| script.js  | 769 |
+| README.md  | 323 |
 
 ## Autor
 
