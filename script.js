@@ -626,3 +626,144 @@ botaoTrocarMensagem.addEventListener("click", function () {
     // textContent troca o texto do parágrafo na tela
     mensagemBoasVindas.textContent = mensagens[mensagemAtual];
 });
+
+/* ==========================================================
+   12. Mural de avisos (marcar todos como lidos)
+   ========================================================== */
+
+// Pega o contador de avisos e o botão "Marcar todos como lidos"
+const contadorAvisos = document.getElementById("contador-avisos");
+const botaoAvisosLidos = document.getElementById("btn-avisos-lidos");
+
+// Ao carregar, o contador mostra quantos avisos têm a classe .nao-lido (length)
+contadorAvisos.textContent = document.querySelectorAll(".nao-lido").length;
+
+// Ao clicar, todos os avisos passam a ser lidos
+botaoAvisosLidos.addEventListener("click", function () {
+    // querySelectorAll devolve todos os avisos não lidos
+    const avisosNaoLidos = document.querySelectorAll(".nao-lido");
+
+    // forEach: tira a classe .nao-lido de cada aviso (a borda azul some)
+    avisosNaoLidos.forEach(function (aviso) {
+        aviso.classList.remove("nao-lido");
+    });
+
+    // Zera o contador na tela
+    contadorAvisos.textContent = 0;
+});
+
+/* ==========================================================
+   13. Quadro de horários (destacar o dia escolhido)
+   ========================================================== */
+
+// Pega o texto abaixo da tabela
+const horariosInfo = document.getElementById("horarios-info");
+
+// Função que recebe o dia ("seg", "ter"...), o nome do dia e o botão clicado
+function destacarDia(dia, nomeDia, botao) {
+    // Tira o destaque de todas as células da tabela
+    document.querySelectorAll(".tabela-horarios th, .tabela-horarios td").forEach(function (celula) {
+        celula.classList.remove("destaque");
+    });
+
+    // Destaca as células da coluna do dia (ex.: ".col-seg")
+    document.querySelectorAll(`.col-${dia}`).forEach(function (celula) {
+        celula.classList.add("destaque");
+    });
+
+    // Tira o .ativo de todos os botões de dia e coloca só no botão clicado
+    document.querySelectorAll(".horarios-filtros .btn-filtro").forEach(function (b) {
+        b.classList.remove("ativo");
+    });
+    botao.classList.add("ativo");
+
+    // Monta a lista das aulas do dia, juntando os textos das células do corpo da tabela
+    let aulas = "";
+    document.querySelectorAll(`.tabela-horarios tbody .col-${dia}`).forEach(function (celula, i) {
+        // Antes da segunda aula em diante, coloca " e " para separar (ternário)
+        aulas += (i > 0 ? " e " : "") + celula.textContent;
+    });
+
+    // Mostra o resumo do dia abaixo da tabela
+    horariosInfo.textContent = `${nomeDia}: ${aulas}.`;
+}
+
+// Array de objetos com o código e o nome de cada dia da semana
+const diasDaSemana = [
+    { dia: "seg", nome: "Segunda-feira" },
+    { dia: "ter", nome: "Terça-feira" },
+    { dia: "qua", nome: "Quarta-feira" },
+    { dia: "qui", nome: "Quinta-feira" },
+    { dia: "sex", nome: "Sexta-feira" }
+];
+
+// Para cada dia, pega o botão pelo id (ex.: "btn-dia-seg") e registra o clique
+diasDaSemana.forEach(function (item) {
+    const botaoDia = document.getElementById(`btn-dia-${item.dia}`);
+    botaoDia.addEventListener("click", function () {
+        destacarDia(item.dia, item.nome, botaoDia);
+    });
+});
+
+/* ==========================================================
+   14. Depoimentos (navegar com as setas)
+   ========================================================== */
+
+// Pega todos os depoimentos, as setas e o texto da posição
+const depoimentos = document.querySelectorAll(".depoimento");
+const botaoDepoimentoAnterior = document.getElementById("depoimento-anterior");
+const botaoDepoimentoProximo = document.getElementById("depoimento-proximo");
+const posicaoDepoimentoTexto = document.getElementById("depoimento-posicao");
+
+// Posição do depoimento que está aparecendo (começa no primeiro, índice 0)
+let posicaoDepoimento = 0;
+
+// Função que esconde o depoimento atual e mostra o da nova posição
+function mostrarDepoimento(novaPosicao) {
+    // Tira o .ativo do depoimento atual (o CSS esconde)
+    depoimentos[posicaoDepoimento].classList.remove("ativo");
+
+    // Guarda a nova posição e coloca .ativo no novo depoimento (o CSS mostra)
+    posicaoDepoimento = novaPosicao;
+    depoimentos[posicaoDepoimento].classList.add("ativo");
+
+    // Atualiza o texto da posição, ex.: "2 / 5" (o índice começa em 0, por isso o + 1)
+    posicaoDepoimentoTexto.textContent = `${posicaoDepoimento + 1} / ${depoimentos.length}`;
+}
+
+// Seta da direita: vai para o próximo; depois do último, volta ao primeiro
+botaoDepoimentoProximo.addEventListener("click", function () {
+    let proxima = posicaoDepoimento + 1;
+    if (proxima >= depoimentos.length) {
+        proxima = 0;
+    }
+    mostrarDepoimento(proxima);
+});
+
+// Seta da esquerda: vai para o anterior; antes do primeiro, vai para o último
+botaoDepoimentoAnterior.addEventListener("click", function () {
+    let anterior = posicaoDepoimento - 1;
+    if (anterior < 0) {
+        anterior = depoimentos.length - 1;
+    }
+    mostrarDepoimento(anterior);
+});
+
+// Mostra a posição inicial correta (ex.: "1 / 5") ao carregar a página
+mostrarDepoimento(0);
+
+/* ==========================================================
+   15. Perguntas frequentes (abrir e fechar respostas)
+   ========================================================== */
+
+// Pega todas as perguntas e todos os itens do FAQ (as duas listas têm a mesma ordem)
+const perguntasFaq = document.querySelectorAll(".faq-pergunta");
+const itensFaq = document.querySelectorAll(".faq-item");
+
+// forEach: registra o clique em cada pergunta, usando o índice para achar o item dela
+perguntasFaq.forEach(function (pergunta, i) {
+    pergunta.addEventListener("click", function () {
+        // toggle: abre a resposta se estiver fechada e fecha se estiver aberta
+        itensFaq[i].classList.toggle("aberto");
+    });
+});
